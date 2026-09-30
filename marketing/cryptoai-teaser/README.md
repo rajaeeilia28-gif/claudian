@@ -45,11 +45,21 @@ Voraussetzungen: Python 3.10+, `ffmpeg` im `PATH`, `pip install numpy opencv-pyt
 cd pipeline
 python3 prepare.py ../source/original.mp4      # Frames, freigestelltes Logo, Inter-Schrift
 python3 music.py ../score.wav                   # Soundtrack
-python3 render.py video h ../video_h.mp4        # 16:9 (4 Prozesse, ca. 6 min)
+python3 render.py video h ../video_h.mp4        # 16:9 (4 Prozesse, ca. 8 min)
 python3 render.py video v ../video_v.mp4        # 9:16
 ./finalize.sh ../video_h.mp4 ../score.wav ../export/CryptoAI_Teaser_16x9.mp4
 ./finalize.sh ../video_v.mp4 ../score.wav ../export/CryptoAI_Teaser_9x16.mp4
+python3 poster.py ../export/thumbnail_16x9.jpg ../export/cover_9x16.jpg
 python3 render.py stills h 8.0 50.9             # einzelne Standbilder zur Kontrolle -> stills/
+```
+
+Die Exporte sind Master in hoher Qualität (CRF 15). Für Messenger/Mail mit Größenlimit reicht eine
+2-Pass-Version mit ~3,5 Mbit/s (≈ 28 MB, optisch praktisch identisch):
+
+```bash
+ffmpeg -i export/CryptoAI_Teaser_16x9.mp4 -c:v libx264 -preset slow -b:v 3500k -pass 1 -an -f mp4 /dev/null
+ffmpeg -i export/CryptoAI_Teaser_16x9.mp4 -c:v libx264 -preset slow -b:v 3500k -pass 2 \
+  -c:a aac -b:a 256k -movflags +faststart CryptoAI_Teaser_16x9_share.mp4
 ```
 
 - Texte ändern: `pipeline/spot.py`, Methode `_build_text`.
