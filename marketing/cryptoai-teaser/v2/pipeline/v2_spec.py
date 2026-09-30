@@ -133,7 +133,7 @@ ENDCARD = {
     "h": dict(logo=(960, 390, 110), word=(505, 44, 0.12), desc=(560, 26), soon=(625, 18, 0.20),
               disc=([950, 980], 22), disc_t0=26.0),
     "v": dict(logo=(540, 720, 140), word=(860, 56, 0.12), desc=(930, 30), soon=(1005, 22, 0.20),
-              disc=([1360, 1396, 1432], 26), disc_t0=25.4),
+              disc=([1360, 1396, 1432], 26), disc_t0=26.0),
 }
 
 # Maximum source zoom (canvas px per 1080p source px) approved per shot and format.
