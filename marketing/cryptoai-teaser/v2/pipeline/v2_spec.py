@@ -68,7 +68,7 @@ SYSTEM = {
     "v": dict(slab=(130, 370, 950, 1450), radius=28, cols=2, rows=3,
               order=["MARKT", "DATEN", "GELDFLUSS", "DERIVATE", "MAKRO", "RISIKO"],
               label_px=17, label_track=0.14, pad=28, content_top=64,
-              wordmark=dict(cy=310, logo_px=40, text_px=24, track=0.16, gap=14)),
+              wordmark=dict(cy=322, logo_px=40, text_px=24, track=0.16, gap=14)),
 }
 CELL_CROPS = {  # label -> (frame, (x0, y0, x1, y1), scale)
     "h": {
@@ -76,7 +76,7 @@ CELL_CROPS = {  # label -> (frame, (x0, y0, x1, y1), scale)
         "DATEN": (600, (130, 300, 910, 520), 0.595),
         "GELDFLUSS": (345, (80, 185, 560, 315), 0.967),
         "DERIVATE": (345, (926, 236, 1456, 626), 0.776),
-        "MAKRO": (710, (130, 205, 560, 320), 1.0),
+        "MAKRO": (710, (130, 205, 560, 320), 0.97),   # x 1.03 camera push stays <= 1.0
         "RISIKO": ("R1", (150, 320, 580, 615), 1.0),
     },
     "v": {

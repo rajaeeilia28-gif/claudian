@@ -32,6 +32,8 @@ python3 v2_render.py stills h 1.8 5.5 16.3            # Vorschau-Standbilder
 python3 v2_render.py preview h 0 19 ../out/preview_h_0-19.mp4
 python3 ../qa/audit_manifest.py ../out/preview_h_0-19.mp4.uses.json
 python3 ../qa/audit_video.py ../out/preview_h_0-19.mp4 h 0 --overlays ../out/overlays
+python3 v2_render.py preview v 25.4 30 ../out/preview_v_25-30.mp4   # Endcard-Segment
+python3 ../qa/audit_video.py ../out/preview_v_25-30.mp4 v 25.4       # Zeit-Offset = Segmentstart
 ```
 
 ## Umgesetzte Festlegungen (Auszug)

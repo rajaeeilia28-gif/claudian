@@ -18,6 +18,11 @@ sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath
 import v2_spec as S  # noqa: E402
 
 
+# segments without camera travel (holds and slow pushes) per format
+HOLDS = {f: [(0.6, 2.8), (4.0, 7.5), (7.5, 12.0), (12.0, 13.2), (15.0, 15.5), (18.4, 19.0), (26.6, 29.6)]
+         for f in ("h", "v")}
+
+
 def probe(path):
     out = subprocess.run(["ffmpeg", "-hide_banner", "-i", path], capture_output=True, text=True).stderr
     line = [ln for ln in out.splitlines() if "Video:" in ln][0]
@@ -84,12 +89,12 @@ def audit(path, fmt, t_off, overlays=None):
                 cv2.imwrite(os.path.join(overlays, f"{fmt}_{t:06.2f}.jpg"), ov, [cv2.IMWRITE_JPEG_QUALITY, 80])
     res["frames"] = n
     res["duration_s"] = round(n / S.FPS, 3)
-    # cuts: large jumps compared with the local median
+    # cuts: isolated spikes against the local median (dark-to-dark cuts can stay below 8 absolute)
     dv = np.array([d for _, d in diffs])
     cuts = []
     for k, (t, d) in enumerate(diffs):
         local = np.median(dv[max(0, k - 30):k + 30])
-        if d > 8 and d > 5 * max(local, 0.3):
+        if d > 3 and d > 10 * max(local, 0.3):
             cuts.append(round(t, 3))
     planned = [c for c in S.HARD_CUTS if t_off <= c < t_off + n / S.FPS]
     res["cuts_detected"] = cuts
@@ -107,6 +112,12 @@ def audit(path, fmt, t_off, overlays=None):
     res["max_detail_px_on_edge"] = max(edge_touch, key=lambda v: v[1]) if edge_touch else None
     res["frames_with_detail_on_edge"] = sum(1 for _, v in edge_touch if v > 20)
     res["outside_safe_times"] = [round(t, 2) for t, v in outside if v > 40][:60]
+    res["edge_touch_times"] = [round(t, 2) for t, v in edge_touch if v > 20][:60]
+    # holds: planned static/slow segments where no detail may leave the safe area or touch the edge
+    holds = HOLDS[fmt]
+    in_hold = lambda t: any(a <= t < b for a, b in holds)
+    res["hold_violations_outside_safe"] = [round(t, 2) for t, v in outside if v > 40 and in_hold(t)]
+    res["hold_violations_edge"] = [round(t, 2) for t, v in edge_touch if v > 20 and in_hold(t)]
     return res
 
 
