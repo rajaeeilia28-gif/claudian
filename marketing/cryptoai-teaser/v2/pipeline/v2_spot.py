@@ -606,8 +606,8 @@ class SpotV2:
     def _endcard(self, c, t):
         ec = S.ENDCARD[self.fmt]
         out = 1 - smooth((t - 29.6) / 0.4)
-        # disclaimer from 25.4 (opacity only)
-        dop = ease_out((t - 25.4) / 0.4, 3) * out
+        # disclaimer fades in (opacity only); 16:9 waits until the slab is gone
+        dop = ease_out((t - ec["disc_t0"]) / 0.4, 3) * out
         for tx, y in zip(self.t_disc, ec["disc"][0]):
             self.place_text(c, tx, self.W / 2, y, opacity=dop)
         if t < 26.0:
