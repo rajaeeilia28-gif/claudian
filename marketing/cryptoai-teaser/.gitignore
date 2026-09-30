@@ -1,0 +1,8 @@
+src/
+fonts/
+stills/
+pipeline/logo_rgba.npy
+pipeline/__pycache__/
+score.wav
+video_h.mp4
+video_v.mp4
