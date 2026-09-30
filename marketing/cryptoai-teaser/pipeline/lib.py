@@ -396,8 +396,18 @@ def finish(canvas, frame_idx, vig=True):
     return (canvas * 255 + 0.5).astype(np.uint8)
 
 
+_GLOW_CACHE = {}
+
+
 def glow_layer(w, h, color, sigma, pad=None, radius=24):
-    """Soft coloured glow shaped like a rounded card, as a Layer."""
+    """Soft coloured glow shaped like a rounded card, as a Layer (cached: it is static per card)."""
+    key = (w, h, repr(color), sigma, pad, radius)
+    if key not in _GLOW_CACHE:
+        _GLOW_CACHE[key] = _glow_layer(w, h, color, sigma, pad, radius)
+    return _GLOW_CACHE[key]
+
+
+def _glow_layer(w, h, color, sigma, pad, radius):
     pad = pad or int(sigma * 3)
     W2, H2 = w + 2 * pad, h + 2 * pad
     m = np.zeros((H2, W2), np.float32)
